@@ -14,7 +14,7 @@ class TypeVaccineController extends Controller
      */
     public function index()
     {
-        //
+        return TypeVaccine::all();
     }
 
     /**
@@ -25,7 +25,14 @@ class TypeVaccineController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $typeVaccine = TypeVaccine::create([
+            'name'=>$request->get('name'),
+            'doses_number'=>$request->get('doses_number'),
+            'country'=>$request->get('country'),
+            'laboratory'=>$request->get('laboratory')
+        ]);
+        
+        return $typeVaccine;
     }
 
     /**
