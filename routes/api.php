@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\TypeVaccineController;
+use App\Http\Controllers\VaccineStockController;
+use App\Http\Controllers\ProvinceVaccinationController;
+use App\Http\Controllers\MunicipalityVaccinationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +23,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('type-vaccine',TypeVaccineController::class);
+Route::apiResource('vaccine-stock',VaccineStockController::class);
+Route::apiResource('province-vaccination',ProvinceVaccinationController::class);
+Route::apiResource('municipality-vaccination',MunicipalityVaccinationController::class);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TypeVaccine;
 use Illuminate\Http\Request;
+use App\Http\Requests\TypeVaccineRequest;
 
 class TypeVaccineController extends Controller
 {
@@ -23,7 +24,7 @@ class TypeVaccineController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TypeVaccineRequest $request)
     {
         $typeVaccine = TypeVaccine::create([
             'name'=>$request->get('name'),
