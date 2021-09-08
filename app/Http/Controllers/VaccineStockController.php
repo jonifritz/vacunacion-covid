@@ -19,15 +19,15 @@ class VaccineStockController extends Controller
     }
 
 
-    public function index2($nombre)
-    {
-        $vac =  VaccineStock::with('type_vaccine')->where();
-        if($nombre == $nombre) {
-            $vac = $vac->balance + $vac->balance;
-        }
+    // public function index2($nombre)
+    // {
+    //     $vac =  VaccineStock::with('type_vaccine')->where();
+    //     if($nombre == $nombre) {
+    //         $vac = $vac->balance + $vac->balance;
+    //     }
 
-        return $vac;
-    }
+    //     return $vac;
+    // }
     /**
      * Show the form for creating a new resource.
      *

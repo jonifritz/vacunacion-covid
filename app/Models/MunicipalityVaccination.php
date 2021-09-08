@@ -22,4 +22,9 @@ class MunicipalityVaccination extends Model
         'assigned_vaccines',
         'discarded_vaccines',
     ];
+
+    public function municipality()
+    {
+        return $this->hasMany('App\Municipality', 'province_id');
+    }
 }
