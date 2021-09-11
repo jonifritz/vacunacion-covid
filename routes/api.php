@@ -4,6 +4,7 @@ use App\Http\Controllers\TypeVaccineController;
 use App\Http\Controllers\VaccineStockController;
 use App\Http\Controllers\ProvinceVaccinationController;
 use App\Http\Controllers\MunicipalityVaccinationController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,9 +19,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});*/
+
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});*/
+
+//Route::apiResource('auth', AuthController::class);
+
+
+
+// Protected routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+// Public routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
+
+
+//Route::apiResource('auth', AuthController::class);
+
+//Route::apiResource('/auth/register', 'AuthController@register');
 
 Route::apiResource('type-vaccine',TypeVaccineController::class);
 Route::apiResource('vaccine-stock',VaccineStockController::class);
