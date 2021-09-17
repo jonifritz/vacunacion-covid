@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TypeVaccineController;
 use App\Http\Controllers\VaccineStockController;
+use App\Http\Controllers\VaccineLotController;
 use App\Http\Controllers\ProvinceVaccinationController;
 use App\Http\Controllers\MunicipalityVaccinationController;
 use App\Http\Controllers\AuthController;
@@ -44,11 +45,11 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
-
 //Route::apiResource('auth', AuthController::class);
 //Route::apiResource('/auth/register', 'AuthController@register');
 
 Route::apiResource('type-vaccine',TypeVaccineController::class);
-Route::apiResource('vaccine-stock',VaccineStockController::class);
 Route::apiResource('province-vaccination',ProvinceVaccinationController::class);
 Route::apiResource('municipality-vaccination',MunicipalityVaccinationController::class);
+
+Route::apiResource('vaccine-lots', VaccineLotController::class);

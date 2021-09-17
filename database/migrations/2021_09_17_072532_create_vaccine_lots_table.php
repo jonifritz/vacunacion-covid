@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVaccineStocksTable extends Migration
+class CreateVaccineLotsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateVaccineStocksTable extends Migration
      */
     public function up()
     {
-        Schema::create('vaccine_stocks', function (Blueprint $table) {
+        Schema::create('vaccine_lots', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('type_vaccine_id')->nullable();
-            $table->string('description');
+            $table->unsignedBigInteger('vaccine_id');
+            $table->string('description')->nullable();
             $table->date('admission_date');
-            $table->integer('quantity');
-            $table->integer('balance');
+            $table->bigInteger('quantity')->default(0);
+            $table->bigInteger('used')->default(0);
             $table->timestamps();
-            
-            
-
         });
     }
 
@@ -34,6 +31,6 @@ class CreateVaccineStocksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vaccine_stocks');
+        Schema::dropIfExists('vaccine_lots');
     }
 }

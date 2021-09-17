@@ -15,11 +15,11 @@ class CreateProvinceVaccinationsTable extends Migration
     {
         Schema::create('province_vaccinations', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('vaccine_id');
+            $table->string('used_lots');
             $table->string('complete_name');
             $table->string('iso_id');
-            $table->integer('received_vaccines');
-            $table->integer('assigned_vaccines');
-            $table->integer('discarded_vaccines');
+            $table->integer('received_lots');
             $table->timestamps();
         });
     }

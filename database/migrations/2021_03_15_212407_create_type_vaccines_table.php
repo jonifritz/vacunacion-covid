@@ -19,6 +19,7 @@ class CreateTypeVaccinesTable extends Migration
             $table->integer('doses_number');
             $table->string('country');
             $table->string('laboratory');
+            $table->bigInteger('counter');
             $table->timestamps();
 
         });
