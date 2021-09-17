@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+
 
 class AuthController extends Controller
 {
@@ -16,27 +20,46 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
-            'region_id' => 'sometimes|number',
-            'locality_id' => 'sometimes|number',
-            'vacunatory_center_id' => 'sometimes|number'
+            'region_id' => 'sometimes',
+            'locality_id' => 'sometimes',
+            'vacunatory_center_id' => 'sometimes'
         ]);
-
-        $user_logged = $request->user;
+        
+        $user_logged = $request->user();
         $user = null;
-        if ($user_logged->role_id === 1) {
+
+        Log::emergency('Estoy en auth');
+        Log::emergency(Auth::user());
+        Log::emergency($request->user()->get('rol_id'));
+        Log::emergency($request->get('rol_id'));
+        
+
+        $new_user_role_id = $request->get('rol_id');
+        
+        Log::emergency($new_user_role_id);
+        $user = null;
+
+        if ($user_logged->role_id === 1)  {
+            //soy superadmin
+            Log::emergency('estoy en superadmin');
+            
             $user = $this->createUser($fields, 2);
+            
         } else if ($user_logged->role_id === 2) {
             //soy admin nacional
+            Log::emergency('estoy en admin nacional');
             if (array_key_exists('region_id', $fields)) {
                 $user = $this->createUser($fields, 3, $fields['region_id']);
             }
         } else if ($user_logged->role_id === 3) {
             //soy admin provincial
+            Log::emergency('estoy en admin provincial');
             if (array_key_exists('locality_id', $fields)) {
                 $user = $this->createUser($fields, 4, $user_logged->region_id,  $fields['locality_id']);
             }
         } else  if ($user_logged->role_id === 4) {
             //soy admin municipal
+            Log::emergency('estoy en admin municipal');
             if (array_key_exists('vacunatory_center_id', $fields)) {
                 $user = $this->createUser($fields, 5, $user_logged->region_id, $user_logged->locality_id, $fields['vacunatory_center_id']);
             }
@@ -99,12 +122,12 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
-    public function logout(Request $request)
+    /*public function logout(Request $request)
     {
         auth()->user->tokens()->delete();
 
         return [
             'message' => 'Se ha cerrado sesión'
         ];
-    }
+    }*/
 }

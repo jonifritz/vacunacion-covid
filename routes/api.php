@@ -33,7 +33,9 @@ use Illuminate\Support\Facades\Route;
 
 // Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout']);
+
+    
 });
 
 
@@ -44,7 +46,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 
 //Route::apiResource('auth', AuthController::class);
-
 //Route::apiResource('/auth/register', 'AuthController@register');
 
 Route::apiResource('type-vaccine',TypeVaccineController::class);

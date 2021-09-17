@@ -46,9 +46,12 @@ class VaccineStockController extends Controller
      */
     public function store(Request $request)
     {
-        $vaccineStock = VaccineStock::create([
+        $vaccineStock = VaccineStock::updateOrcreate(
+            [
             'type_vaccine_id' => $request->get('type_vaccine_id'),
             'description' => 'test',
+            ],
+            [
             'quantity' => DB::raw('quantity+'.$request->get('quantity')),
             'balance' => DB::raw('balance+'.$request->get('quantity')),
             'admission_date' => date('Y-m-d', strtotime($request->get('admission_date'))),
@@ -65,7 +68,9 @@ class VaccineStockController extends Controller
      */
     public function show($id)
     {
-        //
+        $vaccineStock = VaccineStock::where('id', $id)->first();
+
+        return $vaccineStock->first();
     }
 
     /**
