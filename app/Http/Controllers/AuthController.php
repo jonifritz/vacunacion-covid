@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -22,27 +22,26 @@ class AuthController extends Controller
             'locality_id' => 'sometimes',
             'vacunatory_center_id' => 'sometimes'
         ]);
-        
+
         $user_logged = $request->user();
         $user = null;
 
         Log::emergency('Estoy en auth');
         Log::emergency(Auth::user());
-        Log::emergency($request->user()->get('rol_id'));
-        Log::emergency($request->get('rol_id'));
-        
+        Log::emergency($request->user()->get('role_id'));
+        Log::emergency($request->get('role_id'));
 
-        $new_user_role_id = $request->get('rol_id');
-        
+
+        $new_user_role_id = $request->get('role_id');
+
         Log::emergency($new_user_role_id);
         $user = null;
 
-        if ($user_logged->role_id === 1)  {
+        if ($user_logged->role_id === 1) {
             //soy superadmin
             Log::emergency('estoy en superadmin');
-            
+
             $user = $this->createUser($fields, 2);
-            
         } else if ($user_logged->role_id === 2) {
             //soy admin nacional
             Log::emergency('estoy en admin nacional');
@@ -101,7 +100,7 @@ class AuthController extends Controller
         ]);
 
         // Check email
-        $user = User::where('email', $fields['email'])->first();
+        $user = User::where('email', $fields['email'])->with('role')->first();
 
         // Check password
         if (!$user || !Hash::check($fields['password'], $user->password)) {
@@ -110,7 +109,29 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
+        if (!$token = auth()->setTTL(604800)->attempt($fields)) {
+            return response()->json(['error' => 'Usuario y/o contraseña incorrectos'], 400);
+        }
+
+        // obtengo provincia y localidad
+
+        if ($user->region_id) {
+            $response = Http::get('https://apis.datos.gob.ar/georef/api/provincias?id=' . $user->region_id);
+            $region = $response->json();
+
+            if ($region && $region['provincias'] && count($region['provincias']) > 0) {
+                $user->region = $region['provincias'][0];
+            }
+        }
+
+        if ($user->locality_id) {
+            $response = Http::get('https://apis.datos.gob.ar/georef/api/provincias?id=' . $user->region_id);
+            $region = $response->json();
+
+            if ($region && $region['provincias'] && count($region['provincias']) > 0) {
+                $user->locality = $region['provincias'][0];
+            }
+        }
 
         $response = [
             'user' => $user,

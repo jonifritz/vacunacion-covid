@@ -41,6 +41,7 @@ class ProvinceVaccinationController extends Controller
         $envios = $request->received_lots;
         $sumAll = 0;
         $arrayLots = [];
+        
         /* Comprobar si hay vacunas suficientes en todos los lotes */
         foreach ($vaccine_lot as $index => $vc) {
             $sumAll = $sumAll + abs($vc->quantity - $vc->used); 

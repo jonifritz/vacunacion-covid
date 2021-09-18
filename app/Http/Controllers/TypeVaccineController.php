@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TypeVaccine;
 use Illuminate\Http\Request;
 use App\Http\Requests\TypeVaccineRequest;
+use Illuminate\Support\Facades\Log;
 
 class TypeVaccineController extends Controller
 {
@@ -42,9 +43,9 @@ class TypeVaccineController extends Controller
      * @param  \App\Models\TypeVaccine  $typeVaccine
      * @return \Illuminate\Http\Response
      */
-    public function show(TypeVaccine $typeVaccine)
+    public function show($id)
     {
-        //
+        return TypeVaccine::where('id', $id)->get();
     }
 
     /**
