@@ -20,6 +20,7 @@ class CreateProvinceVaccinationsTable extends Migration
             $table->string('complete_name');
             $table->string('iso_id');
             $table->integer('received_lots');
+            $table->bigInteger('used')->default(0);
             $table->timestamps();
         });
     }

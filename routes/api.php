@@ -6,6 +6,7 @@ use App\Http\Controllers\VaccineLotController;
 use App\Http\Controllers\ProvinceVaccinationController;
 use App\Http\Controllers\MunicipalityVaccinationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VacunatoryCenterVaccinationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,5 +52,6 @@ Route::apiResource('type-vaccine', TypeVaccineController::class);
 
 Route::apiResource('province-vaccination', ProvinceVaccinationController::class);
 Route::apiResource('municipality-vaccination', MunicipalityVaccinationController::class);
-
 Route::apiResource('vaccine-lots', VaccineLotController::class);
+Route::apiResource('vacunatory-center-vaccination', VacunatoryCenterVaccinationController::class);
+

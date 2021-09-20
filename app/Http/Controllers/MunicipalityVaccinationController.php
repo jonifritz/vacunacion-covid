@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MunicipalityVaccination;
+use App\Models\ProvinceVaccination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MunicipalityVaccinationController extends Controller
 {
@@ -35,16 +37,52 @@ class MunicipalityVaccinationController extends Controller
      */
     public function store(Request $request)
     {
-        $municipalityVaccination = MunicipalityVaccination::create([
-            'complete_name'=>$request->get('complete_name'),
-            'iso_id'=>$request->get('iso_id'),
-            'province_id'=>$request->get('province_id'),
-            'received_vaccines'=>$request->get('received_vaccines'),
-            'assigned_vaccines'=>$request->get('assigned_vaccines'),
-            'discarded_vaccines'=>$request->get('discarded_vaccines'),
-        ]);
+        $province_lot = ProvinceVaccination::where([['iso_id', $request->user()->region_id], 
+        ['vaccine_id', $request->vaccine_id]])->get();
+        Log::emergency($province_lot);
+        $envios = $request->received_lots;
+        $sumAll = 0;
+        $arrayLots = [];
         
-        return $municipalityVaccination;
+        /* Comprobar si hay vacunas suficientes en todos los lotes */
+        foreach ($province_lot as $index => $vc) {
+            $sumAll = $sumAll + abs($vc->received_lots - $vc->used); 
+        }
+        
+        if($sumAll<$envios) {
+            return response()->json(['message' => 'No hay suficientes vacunas'], 401);
+        }
+
+        foreach ($province_lot as $index => $vc) {
+            $lot_total = $vc->received_lots - $vc->used; 
+            $temp = $lot_total -  $envios ; 
+
+            if($lot_total>0) {
+                if($temp<0) {
+                    $vc->used = $vc->used + $lot_total; 
+                    $envios = abs($envios - $lot_total);
+                    array_push($arrayLots, $vc->id);
+                    $vc->save();
+                } else{ 
+                    $total_x = $vc->used + abs($lot_total-($lot_total-$envios)); 
+                    $vc->used = $total_x;
+                    array_push($arrayLots, $vc->id);
+                    $vc->save();
+                    break;
+                }
+            }
+        }
+    
+        $mv = new MunicipalityVaccination;
+        $mv->vaccine_id = $request->vaccine_id;
+        $mv->used_lots = json_encode($arrayLots);
+        $mv->iso_id = $request->id;
+        $mv->province_id = $request->province_id;
+        $mv->complete_name = $request->complete_name;
+        $mv->received_lots = $request->received_lots;
+        $mv->save();
+
+        return $mv;
     }
 
     /**

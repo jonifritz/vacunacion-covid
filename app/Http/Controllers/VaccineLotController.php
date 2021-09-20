@@ -52,9 +52,10 @@ class VaccineLotController extends Controller
      * @param  \App\Models\VaccineLot  $vaccineLot
      * @return \Illuminate\Http\Response
      */
-    public function show(VaccineLot $vaccineLot)
+    public function show($id)
     {
-        //
+        return VaccineLot::with('vaccine_name')->where('vaccine_id', $id)->get()->all();
+        
     }
 
     /**
