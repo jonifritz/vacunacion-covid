@@ -6,6 +6,7 @@ use App\Models\ProvinceVaccination;
 use App\Models\VaccineLot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProvinceVaccinationController extends Controller
 {
@@ -16,6 +17,14 @@ class ProvinceVaccinationController extends Controller
      */
     public function index()
     {
+        //$iso_id = ProvinceVaccination::unique('iso_id')->all();
+
+        $users = DB::table('province_vaccinations')->get();
+
+        //$iso_id_unique = [];
+        //$iso_id_unique = ProvinceVaccination::->unique();
+        Log::emergency('hola');
+        Log::emergency($users);
         return ProvinceVaccination::all();
     }
 
@@ -27,6 +36,13 @@ class ProvinceVaccinationController extends Controller
     public function create()
     {
         //
+    }
+
+
+    public function index2()
+    {
+        $iso_provincies = ProvinceVaccination::where('iso_id')->array_unique()->get();
+        Log::emergency($iso_provincies);
     }
 
     /**
@@ -41,28 +57,28 @@ class ProvinceVaccinationController extends Controller
         $envios = $request->received_lots;
         $sumAll = 0;
         $arrayLots = [];
-        
+
         /* Comprobar si hay vacunas suficientes en todos los lotes */
         foreach ($vaccine_lot as $index => $vc) {
-            $sumAll = $sumAll + abs($vc->quantity - $vc->used); 
+            $sumAll = $sumAll + abs($vc->quantity - $vc->used);
         }
-        
-        if($sumAll<$envios) {
+
+        if ($sumAll < $envios) {
             return response()->json(['message' => 'No hay suficientes vacunas'], 401);
         }
 
         foreach ($vaccine_lot as $index => $vc) {
-            $lot_total = $vc->quantity - $vc->used; 
-            $temp = $lot_total -  $envios ; 
+            $lot_total = $vc->quantity - $vc->used;
+            $temp = $lot_total -  $envios;
 
-            if($lot_total>0) {
-                if($temp<0) {
-                    $vc->used = $vc->used + $lot_total; 
+            if ($lot_total > 0) {
+                if ($temp < 0) {
+                    $vc->used = $vc->used + $lot_total;
                     $envios = abs($envios - $lot_total);
                     array_push($arrayLots, $vc->id);
                     $vc->save();
-                } else{ 
-                    $total_x = $vc->used + abs($lot_total-($lot_total-$envios)); 
+                } else {
+                    $total_x = $vc->used + abs($lot_total - ($lot_total - $envios));
                     $vc->used = $total_x;
                     array_push($arrayLots, $vc->id);
                     $vc->save();
@@ -70,7 +86,7 @@ class ProvinceVaccinationController extends Controller
                 }
             }
         }
-    
+
         $pv = new ProvinceVaccination;
         $pv->vaccine_id = $request->vaccine_id;
         $pv->used_lots = json_encode($arrayLots);
@@ -79,8 +95,9 @@ class ProvinceVaccinationController extends Controller
         $pv->received_lots = $request->received_lots;
         $pv->save();
 
-        return $pv;
+        $pv->vaccine_lots()->sync($arrayLots);
 
+        return $pv;
     }
 
     /**
@@ -89,9 +106,9 @@ class ProvinceVaccinationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($iso_id)
+    public function show($id)
     {
-        return ProvinceVaccination::where('iso_id', $iso_id)->get()->all();
+        return ProvinceVaccination::where('id', $id)->with(['localities', 'type_vaccine'])->first();
     }
 
     /**

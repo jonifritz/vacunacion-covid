@@ -82,6 +82,9 @@ class MunicipalityVaccinationController extends Controller
         $mv->received_lots = $request->received_lots;
         $mv->save();
 
+
+        $mv->regions()->sync($arrayLots);
+
         return $mv;
     }
 
@@ -93,7 +96,7 @@ class MunicipalityVaccinationController extends Controller
      */
     public function show($id)
     {
-        //
+        return MunicipalityVaccination::where('id', $id)->with(['vacunatories', 'type_vaccine'])->first();
     }
 
     /**

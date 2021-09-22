@@ -9,7 +9,7 @@ class MunicipalityVaccination extends Model
 {
     use HasFactory;
 
-   /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -26,5 +26,20 @@ class MunicipalityVaccination extends Model
     public function municipality()
     {
         return $this->hasMany('App\Municipality', 'province_id');
+    }
+
+    public function regions()
+    {
+        return $this->belongsToMany(ProvinceVaccination::class, 'pv_mv');
+    }
+
+    public function type_vaccine()
+    {
+        return $this->belongsTo(TypeVaccine::class, 'vaccine_id');
+    }
+
+    public function vacunatories()
+    {
+        return $this->belongsToMany(VacunatoryCenterVaccination::class, 'mv_vc');
     }
 }

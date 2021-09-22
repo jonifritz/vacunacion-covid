@@ -16,11 +16,13 @@ class VaccineLot extends Model
         'quantity'
     ];
 
-    public function vaccine_name(){
+    public function vaccine_name()
+    {
         return $this->belongsTo(TypeVaccine::class, 'vaccine_id');
     }
-    
+
+    public function regions()
+    {
+        return $this->belongsToMany(ProvinceVaccination::class, 'vl_pv');
+    }
 }
-
-
-

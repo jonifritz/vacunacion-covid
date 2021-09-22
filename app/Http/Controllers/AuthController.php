@@ -12,6 +12,46 @@ use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $user_logged = Auth::user();
+        if ($user_logged->role_id === 1) {
+            return User::all();
+        }
+        else if ($user_logged->role_id === 2) {
+            return User::where('role_id', 3)->get()->all();
+        }
+        else if ($user_logged->role_id === 3) {
+            return User::where('role_id', 4)->get()->all();
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id, Request $request)
+    {
+        $user = User::find($id);
+
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
+        $user->password = bcrypt($request->get('password'));
+        
+        if ($user->save()){
+        return response()->json($user, 201);
+        }
+    }
+
+
+
     public function register(Request $request)
     {
         $fields = $request->validate([

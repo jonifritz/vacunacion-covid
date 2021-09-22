@@ -21,4 +21,19 @@ class ProvinceVaccination extends Model
         'assigned_vaccines',
         'discarded_vaccines',
     ];
+
+    public function type_vaccine()
+    {
+        return $this->belongsTo(TypeVaccine::class, 'vaccine_id');
+    }
+
+    public function vaccine_lots()
+    {
+        return $this->belongsToMany(VaccineLot::class, 'vl_pv');
+    }
+
+    public function localities()
+    {
+        return $this->belongsToMany(MunicipalityVaccination::class, 'pv_mv');
+    }
 }

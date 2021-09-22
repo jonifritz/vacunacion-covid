@@ -80,6 +80,8 @@ class VacunatoryCenterVaccinationController extends Controller
         $vc->locality_id = $request->locality_id;
         $vc->received_lots = $request->received_lots;
         $vc->save();
+        
+        $vc->localities()->sync($arrayLots);
 
         return $vc;
     }
@@ -92,7 +94,7 @@ class VacunatoryCenterVaccinationController extends Controller
      */
     public function show($id)
     {
-        return VacunatoryCenterVaccination::where('id', $id)->get()->all();
+        return VacunatoryCenterVaccination::where('id', $id)->with(['localities', 'type_vaccine'])->first();
     }
 
     /**

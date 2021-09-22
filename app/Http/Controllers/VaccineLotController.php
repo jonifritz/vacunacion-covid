@@ -54,7 +54,7 @@ class VaccineLotController extends Controller
      */
     public function show($id)
     {
-        return VaccineLot::with('vaccine_name')->where('vaccine_id', $id)->get()->all();
+        return VaccineLot::with(['vaccine_name', 'regions'])->where('id', $id)->first();
         
     }
 

@@ -43,8 +43,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
-//Route::apiResource('auth', AuthController::class);
-//Route::apiResource('/auth/register', 'AuthController@register');
+Route::get('/users', [AuthController::class, 'index']);
+
+Route::put('/update/{id}',[AuthController::class,'edit']);
+//Route::post('users/edit/{id}',AuthController::class,'edit');
 
 Route::apiResource('type-vaccine', TypeVaccineController::class);
 //Route::get('/type-vaccine/show/{id}',TypeVaccineController::class,'show');
@@ -54,4 +56,6 @@ Route::apiResource('province-vaccination', ProvinceVaccinationController::class)
 Route::apiResource('municipality-vaccination', MunicipalityVaccinationController::class);
 Route::apiResource('vaccine-lots', VaccineLotController::class);
 Route::apiResource('vacunatory-center-vaccination', VacunatoryCenterVaccinationController::class);
+
+//Route::apiResource('welcome', AuthController::class);
 
