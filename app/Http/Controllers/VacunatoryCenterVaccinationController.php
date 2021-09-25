@@ -16,7 +16,7 @@ class VacunatoryCenterVaccinationController extends Controller
      */
     public function index()
     {
-        return VacunatoryCenterVaccination::all();
+        return VacunatoryCenterVaccination::with(['localities', 'type_vaccine', 'locality'])->get();
     }
 
     /**
@@ -94,7 +94,7 @@ class VacunatoryCenterVaccinationController extends Controller
      */
     public function show($id)
     {
-        return VacunatoryCenterVaccination::where('id', $id)->with(['localities', 'type_vaccine'])->first();
+        return VacunatoryCenterVaccination::where('id', $id)->with(['localities', 'type_vaccine', 'locality'])->first();
     }
 
     /**

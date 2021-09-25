@@ -80,8 +80,8 @@ class AuthController extends Controller
         if ($user_logged->role_id === 1) {
             //soy superadmin
             Log::emergency('estoy en superadmin');
-
             $user = $this->createUser($fields, 2);
+            
         } else if ($user_logged->role_id === 2) {
             //soy admin nacional
             Log::emergency('estoy en admin nacional');
@@ -165,11 +165,11 @@ class AuthController extends Controller
         }
 
         if ($user->locality_id) {
-            $response = Http::get('https://apis.datos.gob.ar/georef/api/provincias?id=' . $user->region_id);
-            $region = $response->json();
+            $response = Http::get('https://apis.datos.gob.ar/georef/api/municipios?campos=id,nombre&max=2800&provincia=' . $user->region_id);
+            $locality = $response->json();
 
-            if ($region && $region['provincias'] && count($region['provincias']) > 0) {
-                $user->locality = $region['provincias'][0];
+            if ($locality && $locality['municipios'] && count($locality['municipios']) > 0) {
+                $user->locality = $locality['municipios'][0];
             }
         }
 
@@ -181,6 +181,12 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
+    public function destroy($id)
+    {
+        if (User::where('id', $id)->delete()) {
+            return response()->json(null, 204);
+    }
+
     /*public function logout(Request $request)
     {
         auth()->user->tokens()->delete();
@@ -189,4 +195,5 @@ class AuthController extends Controller
             'message' => 'Se ha cerrado sesión'
         ];
     }*/
+}
 }

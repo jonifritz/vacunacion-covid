@@ -29,11 +29,21 @@ class VacunatoryCenterVaccination extends Model
 
     public function type_vaccine()
     {
-        return $this->belongsToMany(TypeVaccine::class, 'vaccine_id');
+        return $this->belongsTo(TypeVaccine::class, 'vaccine_id');
     }
 
     public function localities()
     {
         return $this->belongsToMany(MunicipalityVaccination::class, 'mv_vc');
+    }
+
+    public function locality()
+    {
+        return $this->belongsTo(MunicipalityVaccination::class, 'locality_id');
+    }
+
+    public function vacunatory()
+    {
+        return $this->hasMany('App\Vacunatory', 'locality_id');
     }
 }

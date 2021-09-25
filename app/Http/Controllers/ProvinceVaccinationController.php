@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProvinceVaccination;
+use App\Models\TypeVaccine;
 use App\Models\VaccineLot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ProvinceVaccinationController extends Controller
 {
@@ -17,15 +20,42 @@ class ProvinceVaccinationController extends Controller
      */
     public function index()
     {
-        //$iso_id = ProvinceVaccination::unique('iso_id')->all();
+        Log::emergency('Estoy en provinceController');
+        Log::emergency(ProvinceVaccination::where('iso_id', 02)->with(['localities', 'type_vaccine'])->get());
+        return ProvinceVaccination::with(['localities', 'type_vaccine'])->get();
+    }
 
-        $users = DB::table('province_vaccinations')->get();
+    public function stats($vaccine_id)
+    {
+        $provinnceVaccination = ProvinceVaccination::where('vaccine_id', $vaccine_id)
+            ->selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("DATE(created_at) as date")
+            ->groupBy(DB::raw("DATE(created_at)"))
+            ->get();
+        $name = TypeVaccine::where('id', $vaccine_id)->first()->name;
 
-        //$iso_id_unique = [];
-        //$iso_id_unique = ProvinceVaccination::->unique();
-        Log::emergency('hola');
-        Log::emergency($users);
-        return ProvinceVaccination::all();
+        $data['province_stats'] = [
+            "name" => $name,
+            "results" => $provinnceVaccination
+        ];
+
+        return  $data;
+    }
+
+    public function statsAll()
+    {
+        $provinnceVaccination = ProvinceVaccination::with('type_vaccine')->selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("DATE(created_at) as date")
+            ->selectRaw("vaccine_id")
+            ->groupBy('vaccine_id')
+            ->groupBy(DB::raw("DATE(created_at)"))
+            ->get();
+
+        $data['province_stats'] = [
+            "results" => $provinnceVaccination->groupBy('type_vaccine.name')->all()
+        ];
+
+        return $data;
     }
 
     /**
@@ -39,11 +69,11 @@ class ProvinceVaccinationController extends Controller
     }
 
 
-    public function index2()
+    /*public function index2()
     {
         $iso_provincies = ProvinceVaccination::where('iso_id')->array_unique()->get();
         Log::emergency($iso_provincies);
-    }
+    }*/
 
     /**
      * Store a newly created resource in storage.
@@ -109,6 +139,17 @@ class ProvinceVaccinationController extends Controller
     public function show($id)
     {
         return ProvinceVaccination::where('id', $id)->with(['localities', 'type_vaccine'])->first();
+    }
+
+    public function showProvinceVaccines()
+    {
+        Log::emergency('region es '.Auth::user()->region_id);
+        $region_id = Auth::user()->region_id;
+        Log::emergency('Estoy en region '.Auth::user()->region_id);
+        //Log::emergency(ProvinceVaccination::where('iso_id', 02)->with(['localities', 'type_vaccine'])->get());
+        //Log::emergency(ProvinceVaccination::where('iso_id', $region_id)->with(['localities', 'type_vaccine'])->get());
+        
+        return ProvinceVaccination::where('iso_id', $region_id)->with(['localities', 'type_vaccine'])->get();
     }
 
     /**

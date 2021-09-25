@@ -46,16 +46,23 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/users', [AuthController::class, 'index']);
 
 Route::put('/update/{id}',[AuthController::class,'edit']);
+Route::delete('/destroy/{id}',[AuthController::class,'destroy']);
+
 //Route::post('users/edit/{id}',AuthController::class,'edit');
 
 Route::apiResource('type-vaccine', TypeVaccineController::class);
 //Route::get('/type-vaccine/show/{id}',TypeVaccineController::class,'show');
 
+Route::get('/province-vaccination/myVaccines/', [ProvinceVaccinationController::class, 'showProvinceVaccines']);
+
+Route::get('/municipality-vaccination/myVaccines/', [MunicipalityVaccinationController::class, 'showMunicipalitiesVaccines']);
+
+Route::get('province-vaccination/stats/{vaccine_id}', [ProvinceVaccinationController::class, 'stats']);
+Route::get('province-vaccination/statsall', [ProvinceVaccinationController::class, 'statsAll']);
 
 Route::apiResource('province-vaccination', ProvinceVaccinationController::class);
 Route::apiResource('municipality-vaccination', MunicipalityVaccinationController::class);
 Route::apiResource('vaccine-lots', VaccineLotController::class);
 Route::apiResource('vacunatory-center-vaccination', VacunatoryCenterVaccinationController::class);
 
-//Route::apiResource('welcome', AuthController::class);
 

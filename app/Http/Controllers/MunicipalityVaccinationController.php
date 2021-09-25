@@ -6,6 +6,7 @@ use App\Models\MunicipalityVaccination;
 use App\Models\ProvinceVaccination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class MunicipalityVaccinationController extends Controller
 {
@@ -16,7 +17,7 @@ class MunicipalityVaccinationController extends Controller
      */
     public function index()
     {
-        return MunicipalityVaccination::all();
+        return MunicipalityVaccination::with(['vacunatories', 'type_vaccine'])->get();
     }
 
     /**
@@ -97,6 +98,17 @@ class MunicipalityVaccinationController extends Controller
     public function show($id)
     {
         return MunicipalityVaccination::where('id', $id)->with(['vacunatories', 'type_vaccine'])->first();
+    }
+
+    public function showMunicipalitiesVaccines()
+    {
+        Log::emergency('localidad es '.Auth::user()->locality_id);
+        $locality_id = Auth::user()->locality_id;
+        Log::emergency('Estoy en localidad '.Auth::user()->locality_id);
+        //Log::emergency(ProvinceVaccination::where('iso_id', 02)->with(['localities', 'type_vaccine'])->get());
+        //Log::emergency(ProvinceVaccination::where('iso_id', $region_id)->with(['localities', 'type_vaccine'])->get());
+        
+        return MunicipalityVaccination::where('iso_id', $locality_id)->with(['vacunatories', 'type_vaccine'])->get();
     }
 
     /**

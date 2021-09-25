@@ -15,12 +15,13 @@ class MunicipalityVaccination extends Model
      * @var array
      */
     protected $fillable = [
+        'vaccine_id',
+        'used_lots',
         'complete_name',
         'iso_id',
         'province_id',
-        'received_vaccines',
-        'assigned_vaccines',
-        'discarded_vaccines',
+        'received_lots',
+        'used',
     ];
 
     public function municipality()
