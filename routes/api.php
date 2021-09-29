@@ -6,6 +6,7 @@ use App\Http\Controllers\VaccineLotController;
 use App\Http\Controllers\ProvinceVaccinationController;
 use App\Http\Controllers\MunicipalityVaccinationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VacunatoryCenterController;
 use App\Http\Controllers\VacunatoryCenterVaccinationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,16 +54,26 @@ Route::delete('/destroy/{id}',[AuthController::class,'destroy']);
 Route::apiResource('type-vaccine', TypeVaccineController::class);
 //Route::get('/type-vaccine/show/{id}',TypeVaccineController::class,'show');
 
-Route::get('/province-vaccination/myVaccines/', [ProvinceVaccinationController::class, 'showProvinceVaccines']);
+Route::get('/province-vaccination/my-vaccines/', [ProvinceVaccinationController::class, 'showProvinceVaccines']);
 
-Route::get('/municipality-vaccination/myVaccines/', [MunicipalityVaccinationController::class, 'showMunicipalitiesVaccines']);
+Route::get('/municipality-vaccination/my-vaccines/', [MunicipalityVaccinationController::class, 'showMunicipalitiesVaccines']);
 
 Route::get('province-vaccination/stats/{vaccine_id}', [ProvinceVaccinationController::class, 'stats']);
 Route::get('province-vaccination/statsall', [ProvinceVaccinationController::class, 'statsAll']);
+Route::get('province-vaccination/typeVaccineByProvinces/{vaccine_id}', [ProvinceVaccinationController::class, 'typeVaccineByProvinces']);
+Route::get('province-vaccination/typesVaccinesByProvince/{iso_id}', [ProvinceVaccinationController::class, 'typesVaccinesByProvince']);
+Route::get('province-vaccination/alltypesVaccinesProvinces/', [ProvinceVaccinationController::class, 'alltypesVaccinesProvinces']);
+
+Route::get('municipality-vaccination/stats/{vaccine_id}', [MunicipalityVaccinationController::class, 'stats']);
+Route::get('municipality-vaccination/statsall', [MunicipalityVaccinationController::class, 'statsAll']);
+
+Route::get('municipality-vaccination/alltypesVaccinesMunicipalities/', [MunicipalityVaccinationController::class, 'alltypesVaccinesMunicipalities']);
 
 Route::apiResource('province-vaccination', ProvinceVaccinationController::class);
 Route::apiResource('municipality-vaccination', MunicipalityVaccinationController::class);
 Route::apiResource('vaccine-lots', VaccineLotController::class);
 Route::apiResource('vacunatory-center-vaccination', VacunatoryCenterVaccinationController::class);
 
+Route::apiResource('vacunatory-center', VacunatoryCenterController::class);
+Route::put('/edit/{id}',[VacunatoryCenterController::class,'edit']);
 

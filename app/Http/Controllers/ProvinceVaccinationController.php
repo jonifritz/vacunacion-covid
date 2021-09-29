@@ -20,8 +20,8 @@ class ProvinceVaccinationController extends Controller
      */
     public function index()
     {
-        Log::emergency('Estoy en provinceController');
-        Log::emergency(ProvinceVaccination::where('iso_id', 02)->with(['localities', 'type_vaccine'])->get());
+        //Log::emergency('Estoy en provinceController');
+        //Log::emergency(ProvinceVaccination::where('iso_id', 02)->with(['localities', 'type_vaccine'])->get());
         return ProvinceVaccination::with(['localities', 'type_vaccine'])->get();
     }
 
@@ -43,8 +43,9 @@ class ProvinceVaccinationController extends Controller
     }
 
     public function statsAll()
-    {
-        $provinnceVaccination = ProvinceVaccination::with('type_vaccine')->selectRaw('sum(received_lots) as  sum_quantity')
+    {   
+        $provinnceVaccination = ProvinceVaccination::with('type_vaccine')
+            ->selectRaw('sum(received_lots) as  sum_quantity')
             ->selectRaw("DATE(created_at) as date")
             ->selectRaw("vaccine_id")
             ->groupBy('vaccine_id')
@@ -56,6 +57,63 @@ class ProvinceVaccinationController extends Controller
         ];
 
         return $data;
+    }
+
+    public function typeVaccineByProvinces($vaccine_id)
+    {
+        $provinnceVaccination = ProvinceVaccination::where('vaccine_id', $vaccine_id)
+            ->selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("complete_name as complete_name")
+            ->groupBy(DB::raw("complete_name"))
+            ->get();
+        $name = TypeVaccine::where('id', $vaccine_id)->first()->name;
+
+        $data['province_stats_by_province'] = [
+            "name" => $name,
+            "results" => $provinnceVaccination
+        ];
+
+        return  $data;
+    }
+
+    public function typesVaccinesByProvince($iso_id)
+    {
+        Log::emergency('Estoy en nuevo  --primero');
+        Log::emergency(ProvinceVaccination::with('type_vaccine')->get());
+
+        $provinceVaccination = ProvinceVaccination::with('type_vaccine')
+            
+            ->selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("vaccine_id")
+            ->where('iso_id', $iso_id)
+            ->groupBy(DB::raw("vaccine_id"))
+            ->get();
+
+        $name = ProvinceVaccination::where('iso_id', $iso_id)->first()->complete_name;
+        $data['province_stats_by_type_vaccine'] = [
+            "name" => $name,
+            "results" => $provinceVaccination
+        ];
+
+        return  $data;  
+    }
+
+    //Este se usa en PIE CHART
+    public function alltypesVaccinesProvinces()
+    {
+        $provinceVaccination = ProvinceVaccination::
+            selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("complete_name as complete_name")
+            ->groupBy(("complete_name"))
+            ->get();
+        //$name = ProvinceVaccination::first()->complete_name;
+
+        $data['vaccines_by_province'] = [
+           // "name" => $name,
+            "results" => $provinceVaccination
+        ];
+
+        return  $data;
     }
 
     /**
@@ -143,12 +201,12 @@ class ProvinceVaccinationController extends Controller
 
     public function showProvinceVaccines()
     {
-        Log::emergency('region es '.Auth::user()->region_id);
+        Log::emergency('region es ' . Auth::user()->region_id);
         $region_id = Auth::user()->region_id;
-        Log::emergency('Estoy en region '.Auth::user()->region_id);
+        Log::emergency('Estoy en region ' . Auth::user()->region_id);
         //Log::emergency(ProvinceVaccination::where('iso_id', 02)->with(['localities', 'type_vaccine'])->get());
         //Log::emergency(ProvinceVaccination::where('iso_id', $region_id)->with(['localities', 'type_vaccine'])->get());
-        
+
         return ProvinceVaccination::where('iso_id', $region_id)->with(['localities', 'type_vaccine'])->get();
     }
 

@@ -16,7 +16,7 @@ class VacunatoryCenterVaccinationController extends Controller
      */
     public function index()
     {
-        return VacunatoryCenterVaccination::with(['localities', 'type_vaccine', 'locality'])->get();
+        return VacunatoryCenterVaccination::with(['vacunatoryCenter', 'type_vaccine', 'locality'])->get();
     }
 
     /**
@@ -76,9 +76,8 @@ class VacunatoryCenterVaccinationController extends Controller
         $vc = new VacunatoryCenterVaccination;
         $vc->vaccine_id = $request->vaccine_id;
         $vc->used_lots = json_encode($arrayLots);
-        $vc->name = $request->name;
-        $vc->locality_id = $request->locality_id;
         $vc->received_lots = $request->received_lots;
+        $vc->vacunatory_center_id = $request->vacunatory_center_id;
         $vc->save();
         
         $vc->localities()->sync($arrayLots);

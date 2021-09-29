@@ -7,6 +7,8 @@ use App\Models\ProvinceVaccination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TypeVaccine;
+use Illuminate\Support\Facades\DB;
 
 class MunicipalityVaccinationController extends Controller
 {
@@ -18,6 +20,54 @@ class MunicipalityVaccinationController extends Controller
     public function index()
     {
         return MunicipalityVaccination::with(['vacunatories', 'type_vaccine'])->get();
+    }
+
+    public function stats($vaccine_id)
+    {
+        $municipalityVaccination = MunicipalityVaccination::where('vaccine_id', $vaccine_id)
+            ->selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("DATE(created_at) as date")
+            ->groupBy(DB::raw("DATE(created_at)"))
+            ->get();
+        $name = TypeVaccine::where('id', $vaccine_id)->first()->name;
+
+        $data['municipality_stats'] = [
+            "name" => $name,
+            "results" => $municipalityVaccination
+        ];
+        return  $data;
+    }
+
+    public function statsAll()
+    {
+        $municipalityVaccination = MunicipalityVaccination::with('type_vaccine')->selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("DATE(created_at) as date")
+            ->selectRaw("vaccine_id")
+            ->groupBy('vaccine_id')
+            ->groupBy(DB::raw("DATE(created_at)"))
+            ->get();
+
+        $data['municipality_stats'] = [
+            "results" => $municipalityVaccination->groupBy('type_vaccine.name')->all()
+        ];
+
+        return $data;
+    }
+
+    public function alltypesVaccinesMunicipalities()
+    {
+        $municipalityVaccination = MunicipalityVaccination::selectRaw('sum(received_lots) as  sum_quantity')
+            ->selectRaw("complete_name as complete_name")
+            ->groupBy(("complete_name"))
+            ->get();
+        //$name = ProvinceVaccination::first()->complete_name;
+
+        $data['vaccines_by_municipality'] = [
+           // "name" => $name,
+            "results" => $municipalityVaccination
+        ];
+
+        return  $data;
     }
 
     /**

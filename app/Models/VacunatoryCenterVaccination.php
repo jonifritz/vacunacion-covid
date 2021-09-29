@@ -24,7 +24,7 @@ class VacunatoryCenterVaccination extends Model
 
     public function vacunatoryCenter()
     {
-        return $this->hasMany('App\VacunatoryCenter', 'locality_id');
+        return $this->belongsTo(VacunatoryCenter::class);
     }
 
     public function type_vaccine()

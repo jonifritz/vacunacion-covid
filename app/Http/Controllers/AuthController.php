@@ -29,6 +29,10 @@ class AuthController extends Controller
         else if ($user_logged->role_id === 3) {
             return User::where('role_id', 4)->get()->all();
         }
+        else if ($user_logged->role_id === 4) {
+            return User::where('role_id', 5)->get()->all();
+        }
+
     }
 
     /**
@@ -165,7 +169,7 @@ class AuthController extends Controller
         }
 
         if ($user->locality_id) {
-            $response = Http::get('https://apis.datos.gob.ar/georef/api/municipios?campos=id,nombre&max=2800&provincia=' . $user->region_id);
+            $response = Http::get('https://apis.datos.gob.ar/georef/api/municipios?id=' . $user->locality_id);
             $locality = $response->json();
 
             if ($locality && $locality['municipios'] && count($locality['municipios']) > 0) {
