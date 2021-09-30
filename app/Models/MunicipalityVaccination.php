@@ -43,4 +43,5 @@ class MunicipalityVaccination extends Model
     {
         return $this->belongsToMany(VacunatoryCenterVaccination::class, 'mv_vc');
     }
+
 }

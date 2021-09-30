@@ -16,14 +16,14 @@ class VacunatoryCenterController extends Controller
     {
         $user = $request->user();
         $locality = $user->locality_id;
-        return VacunatoryCenter::where('locality_id',$locality)->get();
+        return VacunatoryCenter::where('locality_id', $locality)->get();
 
         
     }
 
     public function allVacunatoriesCenters(Request $request)
     {
-        return VacunatoryCenter::all();
+        return VacunatoryCenter::with(['locality'])->get();
     }
 
 
