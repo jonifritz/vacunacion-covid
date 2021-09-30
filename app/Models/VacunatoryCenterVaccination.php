@@ -17,14 +17,14 @@ class VacunatoryCenterVaccination extends Model
     protected $fillable = [
         'vaccine_id',
         'used_lots',
-        'name',
-        'locality_id',
         'received_lots',
+        'used',
+        'vacunatory_center_id'
     ];
 
     public function vacunatoryCenter()
     {
-        return $this->belongsTo(VacunatoryCenter::class);
+        return $this->belongsTo(VacunatoryCenter::class, 'vacunatory_center_id');
     }
 
     public function type_vaccine()
@@ -45,5 +45,10 @@ class VacunatoryCenterVaccination extends Model
     public function vacunatory()
     {
         return $this->hasMany('App\Vacunatory', 'locality_id');
+    }
+
+    public function vacunatory2()
+    {
+        return $this->belongsTo(VacunatoryCenter::class, 'vacunatory_center_id');
     }
 }

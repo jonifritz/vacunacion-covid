@@ -112,18 +112,14 @@ class AuthController extends Controller
             throw new BadRequestException('Faltan parámetros para crear el usuario');
         }
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
 
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-
-        return response($response, 201);
+        return response()->json([], 201);
     }
 
     private function createUser($fields, $role_id, $region_id = null, $locality_id = null, $vacunatory_center_id = null)
     {
+        
+        Log::emergency('Vacunatory Center Id'.$vacunatory_center_id);
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
@@ -131,7 +127,7 @@ class AuthController extends Controller
             'role_id' => $role_id,
             'region_id' => $region_id,
             'locality_id' => $locality_id,
-            'vacunatory_center_id' => $vacunatory_center_id
+            'vacunaty_center_id' => $vacunatory_center_id
         ]);
         return $user;
     }

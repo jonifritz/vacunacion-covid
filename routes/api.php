@@ -69,6 +69,8 @@ Route::get('municipality-vaccination/statsall', [MunicipalityVaccinationControll
 
 Route::get('municipality-vaccination/alltypesVaccinesMunicipalities/', [MunicipalityVaccinationController::class, 'alltypesVaccinesMunicipalities']);
 
+Route::get('vaccine-lots/alltypesVaccines/', [VaccineLotController::class, 'alltypesVaccines']);
+
 Route::apiResource('province-vaccination', ProvinceVaccinationController::class);
 Route::apiResource('municipality-vaccination', MunicipalityVaccinationController::class);
 Route::apiResource('vaccine-lots', VaccineLotController::class);
@@ -76,4 +78,6 @@ Route::apiResource('vacunatory-center-vaccination', VacunatoryCenterVaccinationC
 
 Route::apiResource('vacunatory-center', VacunatoryCenterController::class);
 Route::put('/edit/{id}',[VacunatoryCenterController::class,'edit']);
+
+Route::get('/all-vacunatories-centers', [VacunatoryCenterController::class, 'allVacunatoriesCenters']);
 

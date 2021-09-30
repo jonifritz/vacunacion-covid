@@ -18,6 +18,26 @@ class VaccineLotController extends Controller
     {
         return VaccineLot::with('vaccine_name')->get();
     }
+
+    //Este se usa en PIE CHART
+    public function alltypesVaccines()
+    {
+        Log::emergency('Estoy en lotes');
+        $countryLot = VaccineLot::with('vaccine_name')
+            ->selectRaw('sum(quantity) as  sum_quantity')
+            ->selectRaw("vaccine_id as vaccine_id")
+            ->groupBy(("vaccine_id"))
+            ->get();
+        
+
+        $data['vaccines_by_country'] = [
+           // "name" => $name,
+            "results" => $countryLot
+        ];
+
+        return  $data;
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -147,7 +147,7 @@ class MunicipalityVaccinationController extends Controller
      */
     public function show($id)
     {
-        return MunicipalityVaccination::where('id', $id)->with(['vacunatories', 'type_vaccine'])->first();
+        return MunicipalityVaccination::where('id', $id)->with(['vacunatories.vacunatoryCenter', 'type_vaccine'])->first();
     }
 
     public function showMunicipalitiesVaccines()

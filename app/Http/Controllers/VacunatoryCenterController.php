@@ -14,13 +14,18 @@ class VacunatoryCenterController extends Controller
      */
     public function index(Request $request)
     {
-        //$user = $request->user();
-       // $locality = $user->locality_id;
-       // return VacunatoryCenter::where('locality_id',$locality)->get();
+        $user = $request->user();
+        $locality = $user->locality_id;
+        return VacunatoryCenter::where('locality_id',$locality)->get();
 
-       return VacunatoryCenter::all();
-
+        
     }
+
+    public function allVacunatoriesCenters(Request $request)
+    {
+        return VacunatoryCenter::all();
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -34,9 +39,9 @@ class VacunatoryCenterController extends Controller
 
         $vacunatoryCenter->name = $request->get('name');
         //$vacunatoryCenter->locality_id = $request->get('locality_id');
-        
-        if ($vacunatoryCenter->save()){
-        return response()->json($vacunatoryCenter, 201);
+
+        if ($vacunatoryCenter->save()) {
+            return response()->json($vacunatoryCenter, 201);
         }
     }
 
@@ -48,7 +53,14 @@ class VacunatoryCenterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $vacunatory_center = new VacunatoryCenter();
+
+        $vacunatory_center->name = $request->name;
+        $vacunatory_center->locality_id = $request->locality_id;
+
+        if ($vacunatory_center->save()) {
+            return response()->json($vacunatory_center, 201);
+        }
     }
 
     /**
@@ -59,7 +71,7 @@ class VacunatoryCenterController extends Controller
      */
     public function show($id)
     {
-        //
+        return VacunatoryCenter::where('id', $id)->with(['localities', 'type_vaccine'])->first();
     }
 
     /**
